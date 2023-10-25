@@ -11,8 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
-  logger: ^1.4.0
   flutter_dotenv: ^5.1.0
   spotify_sdk: ^2.3.1
   flutter_animate: ^4.2.0+1
@@ -20,7 +18,6 @@ dependencies:
   fluttertoast: ^8.2.2
   get_storage: ^2.1.1
   quickalert: ^1.0.2
-  audioplayers: ^5.2.0
   marquee: ^2.2.3
   spotify: ^0.12.0
   palette_generator: ^0.3.3+3

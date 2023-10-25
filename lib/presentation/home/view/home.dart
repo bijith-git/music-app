@@ -42,217 +42,49 @@ class _HomePageState extends State<HomePage> {
             _connected = data.connected;
           }
           return Scaffold(
+              backgroundColor: Colors.green,
               body: StreamBuilder<PlayerState>(
-            stream: SpotifySdk.subscribePlayerState(),
-            builder:
-                (BuildContext context, AsyncSnapshot<PlayerState> snapshot) {
-              var track = snapshot.data?.track;
+                stream: SpotifySdk.subscribePlayerState(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<PlayerState> snapshot) {
+                  var track = snapshot.data?.track;
+                  currentTrackImageUri = track?.imageUri;
+                  var playerState = snapshot.data;
+                  print(track!.name);
+                  if (playerState == null || track == null) {
+                    return Center(
+                      child: Container(),
+                    );
+                  }
 
-              currentTrackImageUri = track?.imageUri;
-              var playerState = snapshot.data;
-              print(track!.name);
-              if (playerState == null || track == null) {
-                return Center(
-                  child: Container(),
-                );
-              }
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  _connected
-                      ? MusicThumbnailWidget(imageUri: track.imageUri)
-                      : const Text('Connect to see an image...'),
-                  // PlayerWidget(
-                  //   player: player,
-                  // ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      SizedIconButton(
-                        width: 50,
-                        icon: Icons.skip_previous,
-                        onPressed: skipPrevious,
-                      ),
-                      playerState.isPaused
-                          ? SizedIconButton(
-                              width: 50,
-                              icon: Icons.play_arrow,
-                              onPressed: resume,
-                            )
-                          : SizedIconButton(
-                              width: 50,
-                              icon: Icons.pause,
-                              onPressed: pause,
-                            ),
-                      SizedIconButton(
-                        width: 50,
-                        icon: Icons.skip_next,
-                        onPressed: skipNext,
-                      ),
-                    ],
-                  ),
-                  track.isPodcast ? const PodcastControl() : Container(),
-                  Text(
-                    'Track',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  track.name.length < 16
-                      ? Text(
-                          '${track.name} ',
-                          maxLines: 1,
-                        )
-                      : MarqueeWidget(track: track),
-                  track.artists.length > 2
-                      ? MarqueeWidget(
-                          track: track,
-                          isArtist: true,
-                        )
-                      : Text(
-                          '${track.artist.name} ',
-                          maxLines: 2,
-                        ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      'Playback',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleSmall,
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        _connected
+                            ? MusicThumbnailWidget(imageUri: track.imageUri)
+                            : const Text('Connect to see an image...'),
+                        const SizedBox(height: 15),
+                        track.isPodcast ? const PodcastControl() : Container(),
+                        const SizedBox(height: 15),
+                        SongDetalisWidget(track: track),
+                        const SizedBox(height: 15),
+                        PlayBackControlsWidget(playerState: playerState),
+                        const SizedBox(height: 15),
+                      ],
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Playback speed: ${playerState.playbackSpeed}'),
-                      Text(
-                          'Progress: ${playerState.playbackPosition}ms/${track.duration}ms'),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Paused: ${playerState.isPaused}'),
-                      Text(
-                          'Shuffling: ${playerState.playbackOptions.isShuffling}'),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Is episode: ${track.isEpisode}'),
-                      Text('Is podcast: ${track.isPodcast}'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                          'RepeatMode: ${playerState.playbackOptions.repeatMode}'),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            'Repeat Mode:',
-                          ),
-                          DropdownButton<RepeatMode>(
-                            value: RepeatMode.values[
-                                playerState.playbackOptions.repeatMode.index],
-                            items: const [
-                              DropdownMenuItem(
-                                value: RepeatMode.off,
-                                child: Text('off'),
-                              ),
-                              DropdownMenuItem(
-                                value: RepeatMode.track,
-                                child: Text('track'),
-                              ),
-                              DropdownMenuItem(
-                                value: RepeatMode.context,
-                                child: Text('context'),
-                              ),
-                            ],
-                            onChanged: (repeatMode) =>
-                                setRepeatMode(repeatMode!),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text('Switch shuffle: '),
-                          Switch.adaptive(
-                            value: playerState.playbackOptions.isShuffling,
-                            onChanged: (bool shuffle) => setShuffle(
-                              shuffle,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
-          ));
+                  );
+                },
+              ));
         });
   }
 
   Future<void> play() async {
     try {
       await SpotifySdk.play(spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
-    } on PlatformException catch (e) {
-      // setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      //
-    }
-  }
-
-  Future<void> pause() async {
-    try {
-      await SpotifySdk.pause();
-    } on PlatformException catch (e) {
-      // setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      //
-    }
-  }
-
-  Future<void> resume() async {
-    try {
-      await SpotifySdk.resume();
-    } on PlatformException catch (e) {
-      // setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      //
-    }
-  }
-
-  Future<void> skipNext() async {
-    try {
-      await SpotifySdk.skipNext();
-    } on PlatformException catch (e) {
-      // setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      //
-    }
-  }
-
-  Future<void> skipPrevious() async {
-    try {
-      await SpotifySdk.skipPrevious();
-    } on PlatformException catch (e) {
-      // setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      //
-    }
-  }
-
-  Future<void> seekTo() async {
-    try {
-      await SpotifySdk.seekTo(positionedMilliseconds: 20000);
     } on PlatformException catch (e) {
       // setStatus(e.code, message: e.message);
     } on MissingPluginException {

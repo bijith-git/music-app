@@ -4,9 +4,13 @@ import 'package:spotify_sdk/models/track.dart';
 
 class MarqueeWidget extends StatelessWidget {
   final bool isArtist;
+  final TextStyle style;
+  final double height;
   const MarqueeWidget({
     Key? key,
     this.isArtist = false,
+    required this.style,
+    this.height = 20,
     required this.track,
   }) : super(key: key);
 
@@ -16,9 +20,10 @@ class MarqueeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 20,
+      height: height,
       child: Marquee(
         blankSpace: 170,
+        style: style,
         startAfter: const Duration(seconds: 3),
         crossAxisAlignment: CrossAxisAlignment.start,
         text:

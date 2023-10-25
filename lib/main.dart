@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:logger/logger.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:spotify_clone/presentation/login/view/login.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/crossfade_state.dart';
@@ -33,13 +33,13 @@ class MyApp extends StatelessWidget {
       scaffoldMessengerKey: scaffoldMessaengerKey,
       title: 'Flutter Demo',
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black,
-        primaryColor: const Color(0xff1cab4f),
-        colorScheme: ColorScheme.dark(
-            primary: Color(0xff1cab4f), onPrimary: Color(0xff1cab4f)),
-        brightness: Brightness.dark,
-        useMaterial3: true,
-      ),
+          scaffoldBackgroundColor: Colors.black,
+          primaryColor: const Color(0xff1cab4f),
+          colorScheme: ColorScheme.dark(
+              primary: Color(0xff1cab4f), onPrimary: Color(0xff1cab4f)),
+          brightness: Brightness.dark,
+          useMaterial3: true,
+          textTheme: GoogleFonts.montserratTextTheme()),
       home: LoginPage(),
     );
   }
@@ -55,17 +55,17 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   bool _loading = false;
   bool _connected = false;
-  final Logger _logger = Logger(
-    //filter: CustomLogFilter(), // custom logfilter can be used to have logs in release mode
-    printer: PrettyPrinter(
-      methodCount: 2, // number of method calls to be displayed
-      errorMethodCount: 8, // number of method calls if stacktrace is provided
-      lineLength: 120, // width of the output
-      colors: true, // Colorful log messages
-      printEmojis: true, // Print an emoji for each log message
-      printTime: true,
-    ),
-  );
+  // final Logger _logger = Logger(
+  //   //filter: CustomLogFilter(), // custom logfilter can be used to have logs in release mode
+  //   printer: PrettyPrinter(
+  //     methodCount: 2, // number of method calls to be displayed
+  //     errorMethodCount: 8, // number of method calls if stacktrace is provided
+  //     lineLength: 120, // width of the output
+  //     colors: true, // Colorful log messages
+  //     printEmojis: true, // Print an emoji for each log message
+  //     printTime: true,
+  //   ),
+  // );
 
   CrossfadeState? crossfadeState;
   late ImageUri? currentTrackImageUri;
@@ -115,22 +115,22 @@ class HomeState extends State<Home> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              SizedIconButton(
+              CustomIconButton(
                 width: 50,
                 icon: Icons.queue_music,
                 onPressed: queue,
               ),
-              SizedIconButton(
+              CustomIconButton(
                 width: 50,
                 icon: Icons.playlist_play,
                 onPressed: play,
               ),
-              SizedIconButton(
+              CustomIconButton(
                 width: 50,
                 icon: Icons.repeat,
                 onPressed: toggleRepeat,
               ),
-              SizedIconButton(
+              CustomIconButton(
                 width: 50,
                 icon: Icons.shuffle,
                 onPressed: toggleShuffle,
@@ -140,12 +140,12 @@ class HomeState extends State<Home> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              SizedIconButton(
+              CustomIconButton(
                 width: 50,
                 onPressed: addToLibrary,
                 icon: Icons.favorite,
               ),
-              SizedIconButton(
+              CustomIconButton(
                 width: 50,
                 onPressed: () => checkIfAppIsActive(context),
                 icon: Icons.info,
@@ -297,23 +297,23 @@ class HomeState extends State<Home> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                SizedIconButton(
+                CustomIconButton(
                   width: 50,
                   icon: Icons.skip_previous,
                   onPressed: skipPrevious,
                 ),
                 playerState.isPaused
-                    ? SizedIconButton(
+                    ? CustomIconButton(
                         width: 50,
                         icon: Icons.play_arrow,
                         onPressed: resume,
                       )
-                    : SizedIconButton(
+                    : CustomIconButton(
                         width: 50,
                         icon: Icons.pause,
                         onPressed: pause,
                       ),
-                SizedIconButton(
+                CustomIconButton(
                   width: 50,
                   icon: Icons.skip_next,
                   onPressed: skipNext,
@@ -528,7 +528,6 @@ class HomeState extends State<Home> {
           if (snapshot.hasData) {
             return Image.memory(snapshot.data!);
           } else if (snapshot.hasError) {
-            setStatus(snapshot.error.toString());
             return SizedBox(
               width: ImageDimension.large.value.toDouble(),
               height: ImageDimension.large.value.toDouble(),
@@ -550,7 +549,7 @@ class HomeState extends State<Home> {
         _loading = true;
       });
       var result = await SpotifySdk.disconnect();
-      setStatus(result ? 'disconnect successful' : 'disconnect failed');
+
       setState(() {
         _loading = false;
       });
@@ -558,12 +557,10 @@ class HomeState extends State<Home> {
       setState(() {
         _loading = false;
       });
-      setStatus(e.code, message: e.message);
     } on MissingPluginException {
       setState(() {
         _loading = false;
       });
-      setStatus('not implemented');
     }
   }
 
@@ -575,9 +572,7 @@ class HomeState extends State<Home> {
       var result = await SpotifySdk.connectToSpotifyRemote(
           clientId: dotenv.env['CLIENT_ID'].toString(),
           redirectUrl: dotenv.env['REDIRECT_URL'].toString());
-      setStatus(result
-          ? 'connect to spotify successful'
-          : 'connect to spotify failed');
+
       setState(() {
         _loading = false;
       });
@@ -585,12 +580,10 @@ class HomeState extends State<Home> {
       setState(() {
         _loading = false;
       });
-      setStatus(e.code, message: e.message);
     } on MissingPluginException {
       setState(() {
         _loading = false;
       });
-      setStatus('not implemented');
     }
   }
 
@@ -603,13 +596,11 @@ class HomeState extends State<Home> {
               'user-modify-playback-state, '
               'playlist-read-private, '
               'playlist-modify-public,user-read-currently-playing');
-      setStatus('Got a token: $authenticationToken');
+
       return authenticationToken;
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
       return Future.error('$e.code: $e.message');
     } on MissingPluginException {
-      setStatus('not implemented');
       return Future.error('not implemented');
     }
   }
@@ -618,10 +609,7 @@ class HomeState extends State<Home> {
     try {
       return await SpotifySdk.getPlayerState();
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future getCrossfadeState() async {
@@ -631,10 +619,7 @@ class HomeState extends State<Home> {
         crossfadeState = crossfadeStateValue;
       });
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> queue() async {
@@ -642,20 +627,14 @@ class HomeState extends State<Home> {
       await SpotifySdk.queue(
           spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> toggleRepeat() async {
     try {
       await SpotifySdk.toggleRepeat();
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> setRepeatMode(RepeatMode repeatMode) async {
@@ -664,10 +643,7 @@ class HomeState extends State<Home> {
         repeatMode: repeatMode,
       );
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> setShuffle(bool shuffle) async {
@@ -676,20 +652,14 @@ class HomeState extends State<Home> {
         shuffle: shuffle,
       );
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> toggleShuffle() async {
     try {
       await SpotifySdk.toggleShuffle();
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   // Future<void> setPlaybackSpeed(
@@ -698,7 +668,7 @@ class HomeState extends State<Home> {
   //     await SpotifySdk.setPodcastPlaybackSpeed(
   //         podcastPlaybackSpeed: podcastPlaybackSpeed);
   //   } on PlatformException catch (e) {
-  //     setStatus(e.code, message: e.message);
+  //
   //   } on MissingPluginException {
   //     setStatus('not implemented');
   //   }
@@ -708,80 +678,56 @@ class HomeState extends State<Home> {
     try {
       await SpotifySdk.play(spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> pause() async {
     try {
       await SpotifySdk.pause();
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> resume() async {
     try {
       await SpotifySdk.resume();
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> skipNext() async {
     try {
       await SpotifySdk.skipNext();
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> skipPrevious() async {
     try {
       await SpotifySdk.skipPrevious();
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> seekTo() async {
     try {
       await SpotifySdk.seekTo(positionedMilliseconds: 20000);
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> seekToRelative() async {
     try {
       await SpotifySdk.seekToRelativePosition(relativeMilliseconds: 20000);
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> switchToLocalDevice() async {
     try {
       // await SpotifySdk.switchToLocalDevice();
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> addToLibrary() async {
@@ -789,10 +735,7 @@ class HomeState extends State<Home> {
       await SpotifySdk.addToLibrary(
           spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
   Future<void> checkIfAppIsActive(BuildContext context) async {
@@ -806,14 +749,11 @@ class HomeState extends State<Home> {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       });
     } on PlatformException catch (e) {
-      setStatus(e.code, message: e.message);
-    } on MissingPluginException {
-      setStatus('not implemented');
-    }
+    } on MissingPluginException {}
   }
 
-  void setStatus(String code, {String? message}) {
-    var text = message ?? '';
-    _logger.i('$code$text');
-  }
+  // void setStatus(String code, {String? message}) {
+  //   var text = message ?? '';
+  //   _logger.i('$code$text');
+  // }
 }
