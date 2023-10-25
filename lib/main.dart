@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:logger/logger.dart';
+import 'package:spotify_clone/presentation/login/view/login.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/crossfade_state.dart';
 import 'package:spotify_sdk/models/image_uri.dart';
@@ -10,12 +12,16 @@ import 'package:spotify_sdk/models/player_context.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
-import 'package:spotify_clone/side_icon.dart';
+import 'package:spotify_clone/widgets/side_icon.dart';
 
 void main() async {
   await dotenv.load(fileName: "lib/.env");
+  await GetStorage.init();
   runApp(const MyApp());
 }
+
+GlobalKey<ScaffoldMessengerState> scaffoldMessaengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -24,12 +30,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: scaffoldMessaengerKey,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        scaffoldBackgroundColor: Colors.black,
+        primaryColor: const Color(0xff1cab4f),
+        colorScheme: ColorScheme.dark(
+            primary: Color(0xff1cab4f), onPrimary: Color(0xff1cab4f)),
+        brightness: Brightness.dark,
         useMaterial3: true,
       ),
-      home: const Home(),
+      home: LoginPage(),
     );
   }
 }
