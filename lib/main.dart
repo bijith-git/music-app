@@ -53,7 +53,10 @@ class MyApp extends StatelessWidget {
                 primary: Color(0xff1cab4f), onPrimary: Color(0xff1cab4f)),
             brightness: Brightness.dark,
             useMaterial3: true,
-            textTheme: GoogleFonts.montserratTextTheme()),
+            textTheme: GoogleFonts.montserratTextTheme().apply(
+              bodyColor: Colors.white,
+              displayColor: Colors.white,
+            )),
         home: const NavBarWidget(),
       ),
     );

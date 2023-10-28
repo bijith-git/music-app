@@ -1,10 +1,8 @@
-
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotify_clone/core/providers/spotify_provider.dart';
 import 'package:spotify_clone/presentation/home/view/music.dart';
-
 
 class HomePage extends StatefulWidget {
   static const String routeName = '/home';
