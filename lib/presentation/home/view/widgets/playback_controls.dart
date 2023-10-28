@@ -28,7 +28,7 @@ class _PlayBackControlsWidgetState extends State<PlayBackControlsWidget> {
   @override
   Widget build(BuildContext context) {
     return widget.playerState == null
-        ? Text("Player statedate is null")
+        ? const Text("Player statedate is null")
         : Column(
             children: [
               AudioProgressBar(
@@ -92,7 +92,7 @@ class _PlayBackControlsWidgetState extends State<PlayBackControlsWidget> {
   Future<void> pause() async {
     try {
       await SpotifySdk.pause();
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // setStatus(e.code, message: e.message);
     } on MissingPluginException {
       //
@@ -102,7 +102,7 @@ class _PlayBackControlsWidgetState extends State<PlayBackControlsWidget> {
   Future<void> resume() async {
     try {
       await SpotifySdk.resume();
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // setStatus(e.code, message: e.message);
     } on MissingPluginException {
       //
@@ -114,14 +114,14 @@ class _PlayBackControlsWidgetState extends State<PlayBackControlsWidget> {
       await SpotifySdk.setShuffle(
         shuffle: shuffle,
       );
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> skipNext() async {
     try {
       await SpotifySdk.skipNext();
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // setStatus(e.code, message: e.message);
     } on MissingPluginException {
       //
@@ -131,7 +131,7 @@ class _PlayBackControlsWidgetState extends State<PlayBackControlsWidget> {
   Future<void> skipPrevious() async {
     try {
       await SpotifySdk.skipPrevious();
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // setStatus(e.code, message: e.message);
     } on MissingPluginException {
       //
@@ -141,7 +141,7 @@ class _PlayBackControlsWidgetState extends State<PlayBackControlsWidget> {
   Future<void> seekTo() async {
     try {
       await SpotifySdk.seekTo(positionedMilliseconds: 20000);
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // setStatus(e.code, message: e.message);
     } on MissingPluginException {
       //
@@ -154,8 +154,8 @@ class AudioProgressBar extends StatefulWidget {
   final Duration totalProgress;
   final Function(double)? onTap;
 
-  AudioProgressBar(
-      {required this.currentProgress, required this.totalProgress, this.onTap});
+  const AudioProgressBar(
+      {super.key, required this.currentProgress, required this.totalProgress, this.onTap});
 
   @override
   State<AudioProgressBar> createState() => _AudioProgressBarState();
@@ -231,7 +231,7 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
                 }),
           ),
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

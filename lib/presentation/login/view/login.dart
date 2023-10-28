@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:provider/provider.dart';
-import 'package:spotify_clone/core/providers/spotify_provider.dart';
-import 'package:spotify_clone/presentation/home/view/home.dart';
-import 'package:spotify_clone/utils/error_message.dart';
-import 'package:spotify_clone/utils/secure_storage.dart';
 
 class LoginPage extends StatelessWidget {
   static const String routeName = '/login';
@@ -102,16 +97,16 @@ class LoginPage extends StatelessWidget {
             const Spacer(),
             ElevatedButton(
                 onPressed: () async {
-                  var auth =
-                      await context.read<SpotifyProvider>().getAccessToken();
-                  if (auth) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
-                  } else {
-                    errorPopUp(
-                        context: context,
-                        message: "Failed to login to spotify");
-                  }
+                  // var auth =
+                  //     await context.read<SpotifyProvider>().getAccessToken();
+                  // if (auth) {
+                  //   Navigator.push(context,
+                  //       MaterialPageRoute(builder: (context) => HomePage()));
+                  // } else {
+                  //   errorPopUp(
+                  //       context: context,
+                  //       message: "Failed to login to spotify");
+                  // }
                 },
                 child: const Text("Login")),
             const Spacer(),

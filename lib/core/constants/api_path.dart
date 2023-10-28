@@ -1,1 +1,9 @@
-//todo: When using REST API service in dart then we can store all the API endpoints in a separate file api_path.dart
+class ApiConfig {
+  static const baseUrl = 'https://api.spotify.com/v1/';
+}
+
+class ApiEndPoint {
+  static String getAlbum = 'albums';
+  static String newReleases = 'browse/new-releases';
+  static String getPlaylist = 'playlists';
+}

@@ -5,8 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spotify_clone/core/providers/spotify_provider.dart';
-import 'package:spotify_clone/presentation/home/view/home.dart';
-import 'package:spotify_clone/presentation/login/view/login.dart';
+import 'package:spotify_clone/presentation/home/navigation.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/crossfade_state.dart';
 import 'package:spotify_sdk/models/image_uri.dart';
@@ -20,14 +19,14 @@ import 'package:spotify_clone/widgets/side_icon.dart';
 void main() async {
   await dotenv.load(fileName: "lib/.env");
   await GetStorage.init();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 GlobalKey<ScaffoldMessengerState> scaffoldMessaengerKey =
     GlobalKey<ScaffoldMessengerState>();
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,7 @@ class MyApp extends StatelessWidget {
                 brightness: Brightness.dark,
                 useMaterial3: true,
                 textTheme: GoogleFonts.montserratTextTheme()),
-            home: Home(),
+            home: const NavBarWidget(),
           );
         });
   }
@@ -69,8 +68,6 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    print(dotenv.env['CLIENT_ID']);
-    print(dotenv.env['REDIRECT_URL']);
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
@@ -550,7 +547,7 @@ class HomeState extends State<Home> {
       setState(() {
         _loading = false;
       });
-    } on PlatformException catch (e) {
+    } on PlatformException {
       setState(() {
         _loading = false;
       });
@@ -573,7 +570,7 @@ class HomeState extends State<Home> {
       setState(() {
         _loading = false;
       });
-    } on PlatformException catch (e) {
+    } on PlatformException {
       setState(() {
         _loading = false;
       });
@@ -605,8 +602,8 @@ class HomeState extends State<Home> {
   Future getPlayerState() async {
     try {
       return await SpotifySdk.getPlayerState();
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future getCrossfadeState() async {
@@ -615,23 +612,23 @@ class HomeState extends State<Home> {
       setState(() {
         crossfadeState = crossfadeStateValue;
       });
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> queue() async {
     try {
       await SpotifySdk.queue(
           spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> toggleRepeat() async {
     try {
       await SpotifySdk.toggleRepeat();
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> setRepeatMode(RepeatMode repeatMode) async {
@@ -639,8 +636,8 @@ class HomeState extends State<Home> {
       await SpotifySdk.setRepeatMode(
         repeatMode: repeatMode,
       );
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> setShuffle(bool shuffle) async {
@@ -648,15 +645,15 @@ class HomeState extends State<Home> {
       await SpotifySdk.setShuffle(
         shuffle: shuffle,
       );
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> toggleShuffle() async {
     try {
       await SpotifySdk.toggleShuffle();
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   // Future<void> setPlaybackSpeed(
@@ -674,65 +671,65 @@ class HomeState extends State<Home> {
   Future<void> play() async {
     try {
       await SpotifySdk.play(spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> pause() async {
     try {
       await SpotifySdk.pause();
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> resume() async {
     try {
       await SpotifySdk.resume();
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> skipNext() async {
     try {
       await SpotifySdk.skipNext();
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> skipPrevious() async {
     try {
       await SpotifySdk.skipPrevious();
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> seekTo() async {
     try {
       await SpotifySdk.seekTo(positionedMilliseconds: 20000);
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> seekToRelative() async {
     try {
       await SpotifySdk.seekToRelativePosition(relativeMilliseconds: 20000);
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> switchToLocalDevice() async {
     try {
       // await SpotifySdk.switchToLocalDevice();
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> addToLibrary() async {
     try {
       await SpotifySdk.addToLibrary(
           spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   Future<void> checkIfAppIsActive(BuildContext context) async {
@@ -745,8 +742,8 @@ class HomeState extends State<Home> {
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       });
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   // void setStatus(String code, {String? message}) {

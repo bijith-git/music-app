@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:spotify_sdk/enums/repeat_mode_enum.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 class RepeatButton extends StatefulWidget {
@@ -46,8 +45,8 @@ class _RepeatButtonState extends State<RepeatButton> {
       await SpotifySdk.setRepeatMode(
         repeatMode: repeatMode,
       );
-    } on PlatformException catch (e) {
-    } on MissingPluginException {}
+    } on PlatformException {
+    }
   }
 
   IconData _getIcon() {
