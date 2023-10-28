@@ -38,28 +38,10 @@ class _MusicThumbnailWidgetState extends State<MusicThumbnailWidget> {
     imageUint8List = await SpotifySdk.getImage(
         imageUri: widget.imageUri, dimension: ImageDimension.large);
     if (imageUint8List != null) {
+      isLoading = false;
       await updateColor(MemoryImage(imageUint8List!));
-      printColors();
+      setState(() {});
     }
-    isLoading = false;
-    setState(() {});
-  }
-
-  printColors() {
-    print(paletteGenerator?.vibrantColor?.color);
-    print(paletteGenerator?.darkMutedColor?.color);
-    print(paletteGenerator?.darkVibrantColor?.color);
-    print(paletteGenerator?.lightMutedColor?.color);
-    print(paletteGenerator?.lightVibrantColor?.color);
-    print(paletteGenerator?.dominantColor?.color);
-    print(paletteGenerator?.mutedColor?.color);
-    print(paletteGenerator?.vibrantColor?.color);
-    paletteGenerator?.paletteColors.forEach((e) {
-      print('paletterColor${e.color}');
-    });
-    paletteGenerator?.colors.forEach((element) {
-      print('colors:$element');
-    });
   }
 
   @override

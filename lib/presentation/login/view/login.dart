@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:spotify_clone/helpers/spotify_helper.dart';
+import 'package:provider/provider.dart';
+import 'package:spotify_clone/core/providers/spotify_provider.dart';
 import 'package:spotify_clone/presentation/home/view/home.dart';
+import 'package:spotify_clone/utils/error_message.dart';
 import 'package:spotify_clone/utils/secure_storage.dart';
 
 class LoginPage extends StatelessWidget {
-  SecureStorage secureStorage = SecureStorage();
   static const String routeName = '/login';
   LoginPage({super.key});
   List<Color> colors = [
@@ -19,15 +19,9 @@ class LoginPage extends StatelessWidget {
     const Color(0xFFaae091),
     const Color(0xFFb1e08f),
   ];
-  getSFile() {
-    secureStorage.saveData(key: 'he', value: 'saved file');
-    var data = secureStorage.getData(key: 'he');
-    print(data);
-  }
 
   @override
   Widget build(BuildContext context) {
-    getSFile();
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -49,7 +43,10 @@ class LoginPage extends StatelessWidget {
               child: RichText(
                   text: TextSpan(
                       text: "over ",
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(color: Colors.white),
                       children: [
                     WidgetSpan(
                       child: Text(
@@ -62,7 +59,12 @@ class LoginPage extends StatelessWidget {
                           .animate(adapter: ValueAdapter(0.5))
                           .shimmer(colors: colors),
                     ),
-                    const TextSpan(text: '\n Songs on Spotify')
+                    TextSpan(
+                        text: '\n Songs on Spotify',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: Colors.white))
                   ])),
             ),
             const Spacer(),
@@ -72,7 +74,10 @@ class LoginPage extends StatelessWidget {
                   textAlign: TextAlign.start,
                   text: TextSpan(
                       text: "over ",
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge!
+                          .copyWith(color: Colors.white),
                       children: [
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
@@ -86,16 +91,26 @@ class LoginPage extends StatelessWidget {
                               .animate(adapter: ValueAdapter(0.5))
                               .shimmer(colors: colors),
                         ),
-                        const TextSpan(text: '\n Podcast on Spotify')
+                        TextSpan(
+                            text: '\n Podcast on Spotify',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(color: Colors.white))
                       ])),
             ),
             const Spacer(),
             ElevatedButton(
                 onPressed: () async {
-                  var auth = await SpotifyHelper.getAccessToken();
-                  if (auth.isNotEmpty) {
+                  var auth =
+                      await context.read<SpotifyProvider>().getAccessToken();
+                  if (auth) {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => HomePage()));
+                  } else {
+                    errorPopUp(
+                        context: context,
+                        message: "Failed to login to spotify");
                   }
                 },
                 child: const Text("Login")),

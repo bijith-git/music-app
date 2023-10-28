@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:spotify_clone/core/providers/spotify_provider.dart';
+import 'package:spotify_clone/presentation/home/view/home.dart';
 import 'package:spotify_clone/presentation/login/view/login.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/crossfade_state.dart';
@@ -11,37 +13,43 @@ import 'package:spotify_sdk/models/image_uri.dart';
 import 'package:spotify_sdk/models/player_context.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
+import 'package:provider/provider.dart';
 
 import 'package:spotify_clone/widgets/side_icon.dart';
 
 void main() async {
   await dotenv.load(fileName: "lib/.env");
   await GetStorage.init();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 GlobalKey<ScaffoldMessengerState> scaffoldMessaengerKey =
     GlobalKey<ScaffoldMessengerState>();
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      scaffoldMessengerKey: scaffoldMessaengerKey,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-          scaffoldBackgroundColor: Colors.black,
-          primaryColor: const Color(0xff1cab4f),
-          colorScheme: ColorScheme.dark(
-              primary: Color(0xff1cab4f), onPrimary: Color(0xff1cab4f)),
-          brightness: Brightness.dark,
-          useMaterial3: true,
-          textTheme: GoogleFonts.montserratTextTheme()),
-      home: LoginPage(),
-    );
+    return ChangeNotifierProvider(
+        lazy: false,
+        create: (context) => SpotifyProvider(context: context),
+        builder: (context, _) {
+          return MaterialApp(
+            title: 'Spotify Clone',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+                appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
+                scaffoldBackgroundColor: Colors.black,
+                primaryColor: const Color(0xff1cab4f),
+                colorScheme: const ColorScheme.dark(
+                    primary: Color(0xff1cab4f), onPrimary: Color(0xff1cab4f)),
+                brightness: Brightness.dark,
+                useMaterial3: true,
+                textTheme: GoogleFonts.montserratTextTheme()),
+            home: Home(),
+          );
+        });
   }
 }
 
@@ -55,17 +63,6 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   bool _loading = false;
   bool _connected = false;
-  // final Logger _logger = Logger(
-  //   //filter: CustomLogFilter(), // custom logfilter can be used to have logs in release mode
-  //   printer: PrettyPrinter(
-  //     methodCount: 2, // number of method calls to be displayed
-  //     errorMethodCount: 8, // number of method calls if stacktrace is provided
-  //     lineLength: 120, // width of the output
-  //     colors: true, // Colorful log messages
-  //     printEmojis: true, // Print an emoji for each log message
-  //     printTime: true,
-  //   ),
-  // );
 
   CrossfadeState? crossfadeState;
   late ImageUri? currentTrackImageUri;

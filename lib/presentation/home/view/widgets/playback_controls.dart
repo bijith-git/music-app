@@ -8,7 +8,7 @@ import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 class PlayBackControlsWidget extends StatefulWidget {
-  final PlayerState playerState;
+  final PlayerState? playerState;
   const PlayBackControlsWidget({super.key, required this.playerState});
 
   @override
@@ -21,71 +21,72 @@ class _PlayBackControlsWidgetState extends State<PlayBackControlsWidget> {
     super.initState();
   }
 
-  bool get isShuffle => widget.playerState.playbackOptions.isShuffling;
+  bool get isShuffle =>
+      widget.playerState?.playbackOptions.isShuffling ?? false;
   ValueNotifier<int> get playBackPosition =>
-      ValueNotifier(widget.playerState.playbackPosition);
+      ValueNotifier(widget.playerState?.playbackPosition ?? 0);
   @override
   Widget build(BuildContext context) {
-    print(widget.playerState.track?.linkedFromUri);
-    print(widget.playerState.track?.uri);
-    return Column(
-      children: [
-        AudioProgressBar(
-          currentProgress:
-              Duration(milliseconds: widget.playerState.playbackPosition),
-          totalProgress: Duration(
-              milliseconds: widget.playerState.track?.duration ?? 5000),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            CustomIconButton(
-              width: 50,
-              icon: Icons.shuffle,
-              iconColor: widget.playerState.playbackOptions.isShuffling
-                  ? Theme.of(context).primaryColor
-                  : Colors.white,
-              onPressed: () async {
-                await setShuffle(!isShuffle);
-                setState(() {});
-              },
-            ),
-            CustomIconButton(
-              width: 50,
-              icon: Icons.skip_previous,
-              onPressed: skipPrevious,
-            ),
-            widget.playerState.isPaused
-                ? CustomIconButton(
-                    decoration: const BoxDecoration(
-                        color: Colors.white, shape: BoxShape.circle),
-                    iconColor: Colors.black,
+    return widget.playerState == null
+        ? Text("Player statedate is null")
+        : Column(
+            children: [
+              AudioProgressBar(
+                currentProgress: Duration(
+                    milliseconds: widget.playerState!.playbackPosition),
+                totalProgress: Duration(
+                    milliseconds: widget.playerState?.track?.duration ?? 5000),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  CustomIconButton(
                     width: 50,
-                    icon: Icons.play_arrow,
-                    onPressed: resume,
-                  )
-                : CustomIconButton(
-                    decoration: const BoxDecoration(
-                        color: Colors.white, shape: BoxShape.circle),
-                    iconColor: Colors.black,
-                    width: 50,
-                    icon: Icons.pause,
-                    onPressed: pause,
+                    icon: Icons.shuffle,
+                    iconColor: widget.playerState!.playbackOptions.isShuffling
+                        ? Theme.of(context).primaryColor
+                        : Colors.white,
+                    onPressed: () async {
+                      await setShuffle(!isShuffle);
+                      setState(() {});
+                    },
                   ),
-            CustomIconButton(
-              width: 50,
-              icon: Icons.skip_next,
-              onPressed: skipNext,
-            ),
-            RepeatButton(
-              width: 50,
-              repeatMode: RepeatMode
-                  .values[widget.playerState.playbackOptions.repeatMode.index],
-            ),
-          ],
-        ),
-      ],
-    );
+                  CustomIconButton(
+                    width: 50,
+                    icon: Icons.skip_previous,
+                    onPressed: skipPrevious,
+                  ),
+                  widget.playerState!.isPaused
+                      ? CustomIconButton(
+                          decoration: const BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
+                          iconColor: Colors.black,
+                          width: 50,
+                          icon: Icons.play_arrow,
+                          onPressed: resume,
+                        )
+                      : CustomIconButton(
+                          decoration: const BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
+                          iconColor: Colors.black,
+                          width: 50,
+                          icon: Icons.pause,
+                          onPressed: pause,
+                        ),
+                  CustomIconButton(
+                    width: 50,
+                    icon: Icons.skip_next,
+                    onPressed: skipNext,
+                  ),
+                  RepeatButton(
+                    width: 50,
+                    repeatMode: RepeatMode.values[
+                        widget.playerState!.playbackOptions.repeatMode.index],
+                  ),
+                ],
+              ),
+            ],
+          );
   }
 
   Future<void> pause() async {
