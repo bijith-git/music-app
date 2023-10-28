@@ -190,10 +190,10 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
       children: [
         GestureDetector(
           onTapDown: (TapDownDetails details) {
-            double tapPosition = details.localPosition.dx;
-            double totalWidth =
-                MediaQuery.of(context).size.width - 32; // Subtracting padding
-            double progress = _calculateProgress(tapPosition, totalWidth);
+            // double tapPosition = details.localPosition.dx;
+            // double totalWidth =
+            //     MediaQuery.of(context).size.width - 32; // Subtracting padding
+            // double progress = _calculateProgress(tapPosition, totalWidth);
 
             // widget.onTap(progress);
           },

@@ -1,34 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 import 'package:spotify_clone/utils/error_message.dart';
 import 'package:spotify_clone/utils/secure_storage.dart';
 
-final List<String> scopes = [
-  AuthorizationScope.playlist.modifyPrivate,
-  AuthorizationScope.playlist.modifyPublic,
-  AuthorizationScope.playlist.readPrivate,
-  AuthorizationScope.playlist.readCollaborative,
-  AuthorizationScope.library.read,
-  AuthorizationScope.library.modify,
-  AuthorizationScope.connect.readPlaybackState,
-  AuthorizationScope.connect.readCurrentlyPlaying,
-  AuthorizationScope.connect.modifyPlaybackState,
-  AuthorizationScope.listen.readRecentlyPlayed,
-  AuthorizationScope.listen.readPlaybackPosition,
-  AuthorizationScope.listen.readTop,
-  AuthorizationScope.follow.modify,
-  AuthorizationScope.follow.read
-];
-
 class SpotifyAuthenticator extends ChangeNotifier {
   final BuildContext context;
+  bool initialLunch = false;
   SpotifyAuthenticator({
     required this.context,
-  });
+  }) {
+    getAccessToken();
+    Timer(Duration(minutes: 55), () => getAccessToken);
+  }
   SecureStorage secureStorage = SecureStorage();
   Future<bool> getAccessToken() async {
     try {

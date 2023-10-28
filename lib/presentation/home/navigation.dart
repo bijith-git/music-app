@@ -20,6 +20,7 @@ class _NavBarWidgetState extends State<NavBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: body[currentIndex],
       bottomNavigationBar: Theme(
         data: ThemeData(
@@ -39,7 +40,7 @@ class _NavBarWidgetState extends State<NavBarWidget> {
               currentIndex = index;
               setState(() {});
             },
-            backgroundColor: const Color(0x00ffffff),
+            backgroundColor: const Color.fromARGB(168, 9, 9, 9),
             type: BottomNavigationBarType.fixed,
             unselectedItemColor: Colors.white,
             items: const <BottomNavigationBarItem>[

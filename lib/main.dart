@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:spotify_clone/core/providers/spotify_authenticator.dart';
 import 'package:spotify_clone/core/providers/spotify_provider.dart';
 import 'package:spotify_clone/presentation/home/navigation.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
@@ -30,25 +31,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        lazy: false,
-        create: (context) => SpotifyProvider(context: context),
-        builder: (context, _) {
-          return MaterialApp(
-            title: 'Spotify Clone',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-                appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
-                scaffoldBackgroundColor: Colors.black,
-                primaryColor: const Color(0xff1cab4f),
-                colorScheme: const ColorScheme.dark(
-                    primary: Color(0xff1cab4f), onPrimary: Color(0xff1cab4f)),
-                brightness: Brightness.dark,
-                useMaterial3: true,
-                textTheme: GoogleFonts.montserratTextTheme()),
-            home: const NavBarWidget(),
-          );
-        });
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          lazy: false,
+          create: (context) => SpotifyProvider(context: context),
+        ),
+        ChangeNotifierProvider(
+          lazy: false,
+          create: (context) => SpotifyAuthenticator(context: context),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Spotify Clone',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
+            scaffoldBackgroundColor: Colors.black,
+            primaryColor: const Color(0xff1cab4f),
+            colorScheme: const ColorScheme.dark(
+                primary: Color(0xff1cab4f), onPrimary: Color(0xff1cab4f)),
+            brightness: Brightness.dark,
+            useMaterial3: true,
+            textTheme: GoogleFonts.montserratTextTheme()),
+        home: const NavBarWidget(),
+      ),
+    );
   }
 }
 
@@ -602,8 +610,7 @@ class HomeState extends State<Home> {
   Future getPlayerState() async {
     try {
       return await SpotifySdk.getPlayerState();
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future getCrossfadeState() async {
@@ -612,23 +619,20 @@ class HomeState extends State<Home> {
       setState(() {
         crossfadeState = crossfadeStateValue;
       });
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> queue() async {
     try {
       await SpotifySdk.queue(
           spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> toggleRepeat() async {
     try {
       await SpotifySdk.toggleRepeat();
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> setRepeatMode(RepeatMode repeatMode) async {
@@ -636,8 +640,7 @@ class HomeState extends State<Home> {
       await SpotifySdk.setRepeatMode(
         repeatMode: repeatMode,
       );
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> setShuffle(bool shuffle) async {
@@ -645,15 +648,13 @@ class HomeState extends State<Home> {
       await SpotifySdk.setShuffle(
         shuffle: shuffle,
       );
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> toggleShuffle() async {
     try {
       await SpotifySdk.toggleShuffle();
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   // Future<void> setPlaybackSpeed(
@@ -671,65 +672,56 @@ class HomeState extends State<Home> {
   Future<void> play() async {
     try {
       await SpotifySdk.play(spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> pause() async {
     try {
       await SpotifySdk.pause();
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> resume() async {
     try {
       await SpotifySdk.resume();
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> skipNext() async {
     try {
       await SpotifySdk.skipNext();
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> skipPrevious() async {
     try {
       await SpotifySdk.skipPrevious();
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> seekTo() async {
     try {
       await SpotifySdk.seekTo(positionedMilliseconds: 20000);
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> seekToRelative() async {
     try {
       await SpotifySdk.seekToRelativePosition(relativeMilliseconds: 20000);
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> switchToLocalDevice() async {
     try {
       // await SpotifySdk.switchToLocalDevice();
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> addToLibrary() async {
     try {
       await SpotifySdk.addToLibrary(
           spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   Future<void> checkIfAppIsActive(BuildContext context) async {
@@ -742,8 +734,7 @@ class HomeState extends State<Home> {
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       });
-    } on PlatformException {
-    }
+    } on PlatformException {}
   }
 
   // void setStatus(String code, {String? message}) {

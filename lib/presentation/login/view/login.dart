@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 class LoginPage extends StatelessWidget {
   static const String routeName = '/login';
   LoginPage({super.key});
-  List<Color> colors = [
+  final List<Color> colors = [
     const Color(0xFF5ed2b3),
     const Color(0xFF6fd6ad),
     const Color(0xFF78d7a8),
