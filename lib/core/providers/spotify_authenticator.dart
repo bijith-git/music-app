@@ -15,7 +15,7 @@ class SpotifyAuthenticator extends ChangeNotifier {
     required this.context,
   }) {
     getAccessToken();
-    Timer(Duration(minutes: 55), () => getAccessToken);
+    // Timer(Duration(minutes: 55), () => getAccessToken);
   }
   SecureStorage secureStorage = SecureStorage();
   Future<bool> getAccessToken() async {

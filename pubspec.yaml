@@ -33,12 +33,17 @@ dependencies:
   scrollable_positioned_list: ^0.3.8
   audioplayers: ^5.2.0
   intl: ^0.18.1
+  dio_cache_interceptor: ^3.4.2
+  talker_dio_logger: ^1.2.2
+  json_annotation: ^4.8.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+  build_runner: ^2.4.6
+  json_serializable: ^6.7.1
 flutter:
   uses-material-design: true
 
