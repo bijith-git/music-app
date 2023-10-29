@@ -21,7 +21,6 @@ class SpotifyProvider extends ChangeNotifier {
   getSongs() async {
     spotifyApi!.playlists.featured.all().then(
       (value) {
-        print(value.first.images);
         featuredPlaylist.addAll(value);
       },
     );
@@ -29,13 +28,11 @@ class SpotifyProvider extends ChangeNotifier {
           (value) => myPlaylist.addAll(value),
         );
     isLoading = false;
-    print(featuredPlaylist.first.name);
     notifyListeners();
   }
 
   getFavorite() async {
-    var token = secureStorage.getData(key: 'accessToken');
-    final response = await inspector.send<String>(
+    final response = await inspector.send<dynamic>(
       RequestOptions(
           method: 'GET',
           path:
@@ -47,6 +44,8 @@ class SpotifyProvider extends ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
+      var data = Playlist.fromJson(response.data['items']);
+      print(data.description);
       print('Success! Response data: ${response.data}');
     } else {
       print('Error! Response status: ${response.statusCode}');

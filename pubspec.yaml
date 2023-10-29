@@ -36,6 +36,7 @@ dependencies:
   dio_cache_interceptor: ^3.4.2
   talker_dio_logger: ^1.2.2
   json_annotation: ^4.8.1
+  redacted: ^1.0.11
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:spotify_clone/utils/secure_storage.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 Dio createDio() {
@@ -17,11 +18,18 @@ Dio createDio() {
     TalkerDioLogger(
       settings: const TalkerDioLoggerSettings(
         printRequestHeaders: true,
-        printResponseHeaders: true,
+        printResponseHeaders: false,
         printResponseMessage: true,
       ),
     ),
   );
+  dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+    var token = SecureStorage().getData(key: 'accessToken');
+    if (token != null) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+    return handler.next(options);
+  }));
 
   return dio;
 }
@@ -44,13 +52,10 @@ class DioInspector {
       return response;
     } on DioError catch (e) {
       if (e.response != null) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and 3xx.
         print('Response data: ${e.response?.data}');
         print('Response status: ${e.response?.statusCode}');
         print('Response headers: ${e.response?.headers}');
       } else {
-        // Something happened in setting up or sending the request that triggered an Error
         print('Request failed with error: $e');
       }
 

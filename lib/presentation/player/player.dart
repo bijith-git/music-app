@@ -45,7 +45,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
           ],
         ),
         body: Column(children: [
-          Expanded(
+          const Expanded(
               flex: 2,
               child: Padding(
                 padding: EdgeInsets.all(25),
@@ -124,7 +124,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
                       // }
                       // setState(() {});
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       // player.state == PlayerState.playing
                       // ?
                       Icons.pause,
@@ -247,14 +247,14 @@ class _LyricsPageState extends State<LyricsPage> {
                       return ScrollablePositionedList.builder(
                         itemCount: 3,
                         itemBuilder: (context, index) {
-                          Duration duration =
-                              snapshot.data ?? const Duration(seconds: 0);
-                          DateTime dt = DateTime(1970, 1, 1).copyWith(
-                              hour: duration.inHours,
-                              minute: duration.inMinutes.remainder(60),
-                              second: duration.inSeconds.remainder(60));
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
+                          // Duration duration =
+                          //     snapshot.data ?? const Duration(seconds: 0);
+                          // DateTime dt = DateTime(1970, 1, 1).copyWith(
+                          //     hour: duration.inHours,
+                          //     minute: duration.inMinutes.remainder(60),
+                          //     second: duration.inSeconds.remainder(60));
+                          return const Padding(
+                            padding: EdgeInsets.only(bottom: 16.0),
                             child: Text(
                               'lyrics![index].words',
                               style: TextStyle(
