@@ -10,5 +10,7 @@ class ApiEndPoint {
   static String featuredPlaylist = 'browse/featured-playlists';
   static String newRelease = 'browse/new-releases';
   static String getProfile = 'me';
+  static String getDevices = 'me/player/devices';
+  static String transferPlay = 'me/player';
   static String recommendations = 'recommendations';
 }

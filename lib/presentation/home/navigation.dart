@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:spotify_clone/core/constants/app_constants.dart';
 import 'package:spotify_clone/presentation/home/view/home.dart';
 import 'package:spotify_clone/presentation/my_library/library.dart';
+import 'package:spotify_clone/presentation/player/connected_devides.dart';
 import 'package:spotify_clone/presentation/player/player.dart';
 import 'package:spotify_clone/presentation/search/search.dart';
+import 'package:spotify_clone/widgets/widgets.dart';
+import 'package:spotify_sdk/models/player_state.dart';
+import 'package:spotify_sdk/spotify_sdk.dart';
 
 class NavBarWidget extends StatefulWidget {
   const NavBarWidget({super.key});
@@ -14,6 +19,20 @@ class NavBarWidget extends StatefulWidget {
 }
 
 class _NavBarWidgetState extends State<NavBarWidget> {
+  @override
+  void initState() {
+    super.initState();
+    connectToSpotify();
+  }
+
+  bool isConnected = false;
+  connectToSpotify() async {
+    isConnected = await SpotifySdk.connectToSpotifyRemote(
+        clientId: dotenv.env['CLIENT_ID'].toString(),
+        redirectUrl: dotenv.env['REDIRECT_URL'].toString());
+    setState(() {});
+  }
+
   List<Widget> body = [
     const HomePage(),
     const SearchScreen(),
@@ -25,49 +44,92 @@ class _NavBarWidgetState extends State<NavBarWidget> {
     return Scaffold(
       extendBody: true,
       body: body[currentIndex],
-      bottomSheet: GestureDetector(
-        onTap: () {
-          Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  child: MusicPlayerScreen()));
-        },
-        child: Container(
-          alignment: Alignment.center,
-          decoration: const ShapeDecoration(
-              color: grey,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(6),
-                      topRight: Radius.circular(6)))),
-          height: MediaQuery.of(context).size.height * .08,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Image.network(
-                    'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP._KrRAWUfyu9V5PApNFtj0wHaEK%26pid%3DApi&f=1&ipt=f0f9877f1d6459a3717daa03c98d954fe1369ea699bbe749e54c193ecfe3037b&ipo=images',
-                    width: 50,
-                    fit: BoxFit.cover,
-                    height: 50),
-              ),
-              const SizedBox(width: 5),
-              const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("fasdfsdfsdfsdfsdf"),
-                  Text("fasdfsdfsdfsdfsdf"),
-                ],
-              ),
-              const Spacer(),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.computer)),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.favorite)),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.pause)),
-            ],
-          ),
-        ),
-      ),
+      bottomSheet: isConnected
+          ? GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    PageTransition(
+                        type: PageTransitionType.bottomToTop,
+                        child: const MusicPlayerScreen()));
+              },
+              child: StreamBuilder<PlayerState>(
+                  stream: SpotifySdk.subscribePlayerState(),
+                  builder: (context, AsyncSnapshot<PlayerState> snapshot) {
+                    var track = snapshot.data?.track;
+                    var playerState = snapshot.data;
+                    if (playerState == null || track == null) {
+                      return Center(
+                        child: Container(),
+                      );
+                    }
+                    return Container(
+                      alignment: Alignment.center,
+                      decoration: const ShapeDecoration(
+                          color: grey,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(6),
+                                  topRight: Radius.circular(6)))),
+                      height: MediaQuery.of(context).size.height * .08,
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: ImageUriWidget(image: track.imageUri),
+                          ),
+                          const SizedBox(width: 5),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                track.name,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                track.artist.name ?? track.album.name ?? "",
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    PageTransition(
+                                        type: PageTransitionType.bottomToTop,
+                                        child: const ConnectedDevicesWidget()));
+                              },
+                              icon: const Icon(Icons.computer)),
+                          IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.favorite)),
+                          IconButton(
+                              onPressed: () async {
+                                if (playerState.isPaused) {
+                                  await SpotifySdk.resume();
+                                } else {
+                                  await SpotifySdk.pause();
+                                }
+                              },
+                              icon: Icon(playerState.isPaused
+                                  ? Icons.play_arrow
+                                  : Icons.pause)),
+                        ],
+                      ),
+                    );
+                  }),
+            )
+          : const SizedBox(),
       bottomNavigationBar: Theme(
         data: ThemeData(
           splashColor: Colors.transparent,
