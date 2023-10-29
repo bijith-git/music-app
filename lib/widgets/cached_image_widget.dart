@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/core/constants/app_constants.dart';
 
 class CachedImageWidget extends StatelessWidget {
   final String imageUrl;
@@ -34,7 +35,15 @@ class CachedImageWidget extends StatelessWidget {
         height: height,
         child: const Center(child: CircularProgressIndicator()),
       ),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
+      errorWidget: (context, url, error) => Container(
+          alignment: Alignment.center,
+          width: width,
+          decoration: BoxDecoration(
+            color: grey.withOpacity(.9),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          height: height,
+          child: const Icon(Icons.error)),
     );
   }
 }

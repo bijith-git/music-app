@@ -218,16 +218,12 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                               const SizedBox(height: 5),
                                               Text(
                                                 playlist.name,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: textTheme.bodyMedium!
                                                     .copyWith(
                                                         color: Colors.white),
                                               ),
-                                              Text(
-                                                playlist.owner.displayName,
-                                                style: textTheme.bodySmall!
-                                                    .copyWith(
-                                                        color: Colors.white),
-                                              )
                                             ],
                                           );
                                         }),

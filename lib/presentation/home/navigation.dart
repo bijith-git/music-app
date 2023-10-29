@@ -4,7 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:spotify_clone/core/constants/app_constants.dart';
 import 'package:spotify_clone/presentation/home/view/home.dart';
 import 'package:spotify_clone/presentation/my_library/library.dart';
-import 'package:spotify_clone/presentation/player/connected_devides.dart';
+import 'package:spotify_clone/presentation/player/connected_devices.dart';
 import 'package:spotify_clone/presentation/player/player.dart';
 import 'package:spotify_clone/presentation/search/search.dart';
 import 'package:spotify_clone/widgets/widgets.dart';
@@ -59,9 +59,7 @@ class _NavBarWidgetState extends State<NavBarWidget> {
                     var track = snapshot.data?.track;
                     var playerState = snapshot.data;
                     if (playerState == null || track == null) {
-                      return Center(
-                        child: Container(),
-                      );
+                      return SizedBox();
                     }
                     return Container(
                       alignment: Alignment.center,

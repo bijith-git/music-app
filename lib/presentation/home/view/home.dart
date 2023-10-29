@@ -31,6 +31,8 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     String greetingText = getGreeting();
@@ -60,47 +62,42 @@ class _HomePageState extends State<HomePage> {
                 builder: (context, spotify, _) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: SingleChildScrollView(
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ButtonsTabBar(
-                                physics: const NeverScrollableScrollPhysics(),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
-                                backgroundColor: Theme.of(context).primaryColor,
-                                unselectedBackgroundColor:
-                                    Colors.grey[500]!.withOpacity(.5),
-                                unselectedLabelStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                radius: 100,
-                                tabs: const [
-                                  Tab(
-                                    text: "Music",
-                                  ),
-                                  Tab(
-                                    text: "Podcast & Shows",
-                                  )
-                                ]),
-                            const Expanded(
-                              flex: 5,
-                              child: TabBarView(
-                                children: [
-                                  MusicWidget(),
-                                  Center(
-                                    child: Text("Podcast"),
-                                  )
-                                ],
-                              ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ButtonsTabBar(
+                            physics: const NeverScrollableScrollPhysics(),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 10),
+                            backgroundColor: Theme.of(context).primaryColor,
+                            unselectedBackgroundColor:
+                                Colors.grey[500]!.withOpacity(.5),
+                            unselectedLabelStyle: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
+                            radius: 100,
+                            tabs: const [
+                              Tab(
+                                text: "Music",
+                              ),
+                              Tab(
+                                text: "Podcast & Shows",
+                              )
+                            ]),
+                        Expanded(
+                          child: TabBarView(
+                            children: [
+                              MusicWidget(
+                                scaffoldState: scaffoldKey,
+                              ),
+                              Center(
+                                child: Text("Podcast"),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   );
                 },

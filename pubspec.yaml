@@ -37,6 +37,8 @@ dependencies:
   talker_dio_logger: ^1.2.2
   json_annotation: ^4.8.1
   redacted: ^1.0.11
+  audio_video_progress_bar: ^2.0.1
+  youtube_explode_dart: ^2.0.2
 
 dev_dependencies:
   flutter_test:

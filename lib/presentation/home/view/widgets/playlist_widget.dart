@@ -50,7 +50,9 @@ class _PlaylistWidgetState extends State<PlaylistWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CachedImageWidget(
-                            imageUrl: playList.images?.first.url ?? "",
+                            imageUrl: playList.images!.isNotEmpty
+                                ? playList.images!.first.url
+                                : "",
                             width: 120,
                             height: 120,
                           ),

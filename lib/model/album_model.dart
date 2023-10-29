@@ -45,12 +45,12 @@ class AlbumsItem {
         artists: json["artists"] == null
             ? []
             : List<Artist>.from(json["artists"].map((x) => Artist.fromJson(x))),
-        href: json["href"],
-        id: json["id"],
+        href: json["href"] ?? "",
+        id: json["id"] ?? "",
         images: json["images"] == null
             ? []
             : List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
-        name: json["name"],
+        name: json["name"] ?? "",
         releaseDate: DateTime.parse(
             json["release_date"] ?? DateTime.now().toIso8601String()),
         totalTracks: json["total_tracks"].toString(),

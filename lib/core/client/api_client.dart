@@ -17,9 +17,9 @@ Dio createDio() {
   dio.interceptors.add(
     TalkerDioLogger(
       settings: const TalkerDioLoggerSettings(
-        printRequestHeaders: true,
+        printRequestHeaders: false,
         printResponseHeaders: false,
-        printResponseMessage: true,
+        printResponseMessage: false,
       ),
     ),
   );
